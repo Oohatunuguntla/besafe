@@ -1,22 +1,27 @@
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
-import 'package:flutter_dotenv/flutter_dotenv.dart';
+//import 'package:flutter_dotenv/flutter_dotenv.dart';
+import 'package:besafe/landingscreen.dart';
+//import 'package:cloud_firestore/cloud_firestore.dart';
+//import 'package:firebase_database/firebase_database.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
-class Signup extends StatefulWidget{
+class Contactinfo extends StatefulWidget{
   @override
   State<StatefulWidget>createState(){
 
-    return Signupstate();
+    return Contactinfostate();
   }
 }
-class Signupstate extends State<Signup> {
+class Contactinfostate extends State<Contactinfo> {
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   
  
-  String _email;
-  String _password;
-  String _type;
+  String _emergencynumber;
+  String _familynumber1;
+  String _familynumber2;
  
 
   TextEditingController passWordController = TextEditingController();
@@ -24,25 +29,19 @@ class Signupstate extends State<Signup> {
   Widget build(BuildContext context){
     return WillPopScope(
       child: Scaffold(
-        appBar: AppBar(
-          leading: IconButton(
-            icon: Icon(Icons.arrow_back),
-            onPressed: () {
-              Navigator.pop(context, true);
-            },
-          ),
-          title:Text(
-            'Cachycourrier',
-            textAlign: TextAlign.center,
-          ),
-          centerTitle: true,
-          backgroundColor: Colors.pink,
-        ),
+             appBar: PreferredSize(
+         preferredSize: Size.fromHeight(100.0),
+      child: AppBar(
+              centerTitle: true,
+              title: Text('Be Safe'),
+              
+              leading: IconButton(icon: Image.asset('images/logo.png'), onPressed: null),
+      )),
         body: _getbody(),
       ),
       onWillPop: (){
 
-        debugPrint('Exitingg signup page');
+        debugPrint('Exitingg Contact page');
         Navigator.of(context).pop();
       },
     );
@@ -59,23 +58,23 @@ class Signupstate extends State<Signup> {
                   Container(
                     margin: EdgeInsets.only(top: 30),
                     child: Text(
-                      'Register',
+                      'Contact details',
                       style: TextStyle(
                           //fontSize: 40,
                           //fontFamily: 'TooneyNoodle',
-                          color: Colors.pink),
+                          color: Colors.lime),
                       textAlign: TextAlign.center,
                     ),
                   ),
 
                  
-                  // Email Id...
+                  // Emergencynumber...
                   Container(
                     width: 350,
                     height: 50,
                     margin: EdgeInsets.fromLTRB(0, 30, 0, 30),
                     child: TextFormField(
-                      keyboardType: TextInputType.emailAddress,
+                      
                       textAlign: TextAlign.justify,
                       cursorRadius: Radius.circular(5),
                       cursorColor: Colors.grey,
@@ -84,33 +83,31 @@ class Signupstate extends State<Signup> {
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.deepPurple)),
-                        labelText: 'Email',
-                        hintText: 'example@example.com',
+                        labelText: 'Emergencynumber',
+                        hintText: 'Enter phone number to contact in emergency',
                       ),
                       validator: (value) {
                         if (value.isEmpty) {
-                          return 'Email can\'t be empty';
+                          return 'Emergencynumber can\'t be empty';
                         }
-                        if (!(value.contains('@'))) {
-                          return 'Email is invalid';
-                        }
+                        
                         return null;
                       },
                       onSaved: (value) {
-                        _email = value;
+                        _emergencynumber = value;
                       },
                     ),
                   ),
 
                  
 
-                  // Password...
+                  // Familynumber1...
                   Container(
                     width: 350,
                     height: 50,
                     margin: EdgeInsets.only(top: 30),
                     child: TextFormField(
-                      controller: passWordController,
+                     
                       textAlign: TextAlign.justify,
                       cursorRadius: Radius.circular(5),
                       cursorColor: Colors.grey,
@@ -118,26 +115,24 @@ class Signupstate extends State<Signup> {
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.deepPurple)),
-                        labelText: 'Password',
-                        hintText: '*************',
+                        labelText: 'Family or friend number',
+                        hintText: 'Phone number for messaging them in danger',
                       ),
-                      obscureText: true,
+                      
                       validator: (value) {
                         if (value.isEmpty) {
-                          return 'Password can\'t be null';
+                          return 'Phonenumber can\'t be null';
                         }
-                        if (value.length <= 6) {
-                          return 'Password must be atleast 7 letter';
-                        }
-                        return null;
+                        
+                        
                       },
                       onSaved: (value) {
-                        _password = value;
+                        _familynumber1 = value;
                       },
                     ),
                   ),
 
-                  // ReEnter password
+                  // Familynumber2
                   Container(
                     width: 350,
                     height: 50,
@@ -150,90 +145,38 @@ class Signupstate extends State<Signup> {
                       decoration: InputDecoration(
                         border: OutlineInputBorder(
                             borderSide: BorderSide(color: Colors.deepPurple)),
-                        labelText: 'Confirm Password',
-                        hintText: '*************',
+                        labelText: 'Family or friend number',
+                        hintText: 'Phone number for messaging them in danger',
                       ),
-                      obscureText: true,
+                      
                       validator: (value) {
-                        if (value != passWordController.text) {
-                          return 'Password didn\'t match';
+                        if (value.isEmpty) {
+                          return 'Phonenumber didn\'t match';
                         }
                         return null;
                       },
                       onSaved: (value) {
-                        _password = value;
+                        _familynumber2 = value;
                       },
                     ),
                   ),
-
-                  //type
-                  //  Container(
-                  //     width: 350,
-                  //     height: 50,
-                  //     child: Row(
-                  //       children: <Widget>[
-                  //         // Gender Selection...
-                         
-                  //            Container(
-                  //             height: 100,
-                  //             margin: EdgeInsets.only(top: 35),
-                  //             child: DropdownButton<String>(
-                  //               value: _type,
-                  //               onChanged: (String newValue) {
-                  //                 setState(() {
-                  //                   _type = newValue;
-                  //                 });
-                  //               },
-                  //               items: <String>[
-                  //                 'Customer',
-                  //                 'Delivery guy'
-                  //               ].map<DropdownMenuItem<String>>((String value) {
-                  //                 return DropdownMenuItem<String>(
-                  //                   value: value,
-                  //                   child: Text(value),
-                  //                 );
-                  //               }).toList(),
-                  //               isDense: true,
-                  //             ),
-                  //           ),
-                          
-
-                      //   ],
-                      // )),
-                  // Register Button...
+                  // Save Button...
                   Container(
                       width: 350,
                       margin: EdgeInsets.only(top: 30, bottom: 40),
                       child: RaisedButton(
                         child: Text(
-                          'Register',
+                          'Save',
                           style: TextStyle(color: Colors.white),
                         ),
                         onPressed: () {
-                          debugPrint('pressed Register button!');
+                          debugPrint('pressed Save button!');
                           _validateAndSubmit();
                         },
-                        color: Colors.pink,
+                        color: Colors.lime,
                       )),
 
-                  Container(
-                      child: Column(
-                    children: <Widget>[
-                      Text(
-                        'Already Registered? tap the LogIn button',
-                      ),
-                      FlatButton(
-                        child: Text(
-                          'LOG IN',
-                          style: TextStyle(fontSize: 15),
-                        ),
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        textColor: Colors.pink,
-                      )
-                    ],
-                  )),
+                
                 ],
               ),
             ),
@@ -245,7 +188,6 @@ class Signupstate extends State<Signup> {
     final FormState form = _formKey.currentState;
     if (form.validate()) {
       form.save();
-      // print('firstname: $_firstName, lastname: $_lastName, gender: $_gender, email: $_email,dob: $_dob,password: $_password');
       return true;
     }
     return false;
@@ -256,17 +198,17 @@ class Signupstate extends State<Signup> {
       debugPrint('Validated the form');
       
       try {
-        print(_email);
-        print(_password);
-        print(DotEnv().env['ipadress']);
-         var url="http://"+DotEnv().env['ipadress']+":"+DotEnv().env['port']+"/auth/signup";
+        
+         var url="http:// 192.168.29.209:5000/contactdetails_save";
          print(url);
-     
-    http.Response resp = await http.post(url,body: {'email':_email,'password':_password});  // 10.0.2.2 for emulator
+		final _auth=FirebaseAuth.instance;
+		final FirebaseUser user=await _auth.currentUser();
+		var uid=user.uid;
+    http.Response resp = await http.post(url,body: {'uid':uid,'emergencynumber':_emergencynumber,'familynumber1':_familynumber1,'familynumber2':_familynumber2});  // 10.0.2.2 for emulator
     if (resp.statusCode == 200) {
       var jsonResponse = convert.jsonDecode(resp.body);
       print('$jsonResponse');
-      //  Navigator.of(context).pushNamed('/signup');
+        Navigator.push(context,MaterialPageRoute(builder:(context)=>LandingApp()));
     }
     else{
       print("fail");

@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:url_launcher/url_launcher.dart';
 import 'package:flutter_phone_direct_caller/flutter_phone_direct_caller.dart';
 import 'package:flutter_sms/flutter_sms.dart';
-import 'package:besafe/contactdetails.dart';
+import 'package:besafe/contactinfo.dart';
 void main() {
   runApp(LandingApp());
 }
@@ -136,7 +136,7 @@ class _MyHomePageState extends State<MyHomePage> {
                     InkWell(onTap:()=>_directphonecall(),
                     child:getWidget('images/call100.jpg','Emergency Call'),
                     ),
-                    InkWell(onTap:()=>Navigator.push(context,MaterialPageRoute(builder: (context)=>ContactdetailsApp())),
+                    InkWell(onTap:()=>Navigator.push(context,MaterialPageRoute(builder: (context)=>Contactinfo())),
                     child:getWidget('images/call100.jpg','Update contact details'),
                     )
                             ],
